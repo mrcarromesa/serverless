@@ -1,0 +1,40 @@
+service: serverlessjs
+
+# Uso do plugin serverless-webpack que transpila o código para ES6
+plugins:
+  - serverless-webpack
+  - serverless-offline 
+  - serverless-dynamodb-local
+
+# Configuração do serverless-webpack
+# Habilitar o auto-packing de módulos externos
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: local
+  region: us-east-1
+  timeout: 30
+  memorySize: 512
+  package:
+    excludeDevDependencies: true
+    exclude:
+      - .git/**
+      - .vscode/**
+
+functions:
+  hello:
+    handler: handler.run
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
