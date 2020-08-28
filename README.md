@@ -184,31 +184,3 @@ functions:
           cors: true
 ```
 
----
-
-## Utilizar o dynamoDB
-
-- Baseado no tutorial: [AWS Lambda Functions and DynamoDB + Serverless Framework](https://medium.com/@iamNoah_/aws-lambda-functions-and-dynamodb-28ab1089061c)
-
-**Para utilizar o DynamoDB "localmente" é necessário ter instalado o Java Runtime**
-
-- Inicialmente instale a dependencia: 
-
-```bash
-yarn add serverless-dynamodb-local -D
-```
-
-- Adicione nos plugins do `serverless.yml`:
-
-```yml
-plugins:
-  - serverless-webpack
-  - serverless-offline 
-  - serverless-dynamodb-local
-```
-
-- Instale a dependencia do `uuid`:
-
-```bash
-yarn add uuid
-```
