@@ -135,10 +135,10 @@ app.use(_routes__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
 /***/ }),
 
-/***/ "./src/app/controllers/PetsControllers.js":
-/*!************************************************!*\
-  !*** ./src/app/controllers/PetsControllers.js ***!
-  \************************************************/
+/***/ "./src/app/controllers/PetsController.js":
+/*!***********************************************!*\
+  !*** ./src/app/controllers/PetsController.js ***!
+  \***********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -168,6 +168,158 @@ class PetsController {
 
 /***/ }),
 
+/***/ "./src/app/controllers/TodosController.js":
+/*!************************************************!*\
+  !*** ./src/app/controllers/TodosController.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _models_Todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Todo */ "./src/app/models/Todo.js");
+
+
+
+class TodosController {
+  async store(req, res) {
+    const todo = await _models_Todo__WEBPACK_IMPORTED_MODULE_1__["default"].create(req.body);
+    return res.json(todo);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (new TodosController());
+
+/***/ }),
+
+/***/ "./src/app/controllers/UsersController.js":
+/*!************************************************!*\
+  !*** ./src/app/controllers/UsersController.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _models_User__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/User */ "./src/app/models/User.js");
+
+
+
+class UsersController {
+  async index(req, res) {
+    const user = await _models_User__WEBPACK_IMPORTED_MODULE_1__["default"].scan().exec();
+    return res.json(user);
+  }
+
+  async store(req, res) {
+    const user = await _models_User__WEBPACK_IMPORTED_MODULE_1__["default"].create(req.body);
+    return res.json(user);
+  }
+
+  async update(req, res) {
+    const user = await _models_User__WEBPACK_IMPORTED_MODULE_1__["default"].update({
+      id: req.params.id
+    }, req.body);
+    return res.json(user);
+  }
+
+  async delete(req, res) {
+    await _models_User__WEBPACK_IMPORTED_MODULE_1__["default"].delete({
+      id: req.params.id
+    });
+    return res.json({
+      msg: 'Deleted'
+    });
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (new UsersController());
+
+/***/ }),
+
+/***/ "./src/app/models/Todo.js":
+/*!********************************!*\
+  !*** ./src/app/models/Todo.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var dynamoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dynamoose */ "dynamoose");
+/* harmony import */ var dynamoose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dynamoose__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! uuid */ "uuid");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(uuid__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const Todoschema = new dynamoose__WEBPACK_IMPORTED_MODULE_1___default.a.Schema({
+  id: {
+    type: String,
+    hashKey: true,
+    default: Object(uuid__WEBPACK_IMPORTED_MODULE_2__["v4"])()
+  },
+  name: {
+    type: String
+  }
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (dynamoose__WEBPACK_IMPORTED_MODULE_1___default.a.model('Todos', Todoschema));
+
+/***/ }),
+
+/***/ "./src/app/models/User.js":
+/*!********************************!*\
+  !*** ./src/app/models/User.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var dynamoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dynamoose */ "dynamoose");
+/* harmony import */ var dynamoose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dynamoose__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! uuid */ "uuid");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(uuid__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const Userschema = new dynamoose__WEBPACK_IMPORTED_MODULE_1___default.a.Schema({
+  id: {
+    type: String,
+    hashKey: true,
+    default: Object(uuid__WEBPACK_IMPORTED_MODULE_2__["v4"])()
+  },
+  name: {
+    type: String
+  },
+  email: {
+    type: String
+  }
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (dynamoose__WEBPACK_IMPORTED_MODULE_1___default.a.model('Users', Userschema));
+
+/***/ }),
+
 /***/ "./src/routes.js":
 /*!***********************!*\
   !*** ./src/routes.js ***!
@@ -181,13 +333,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ "express");
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _app_controllers_PetsControllers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/controllers/PetsControllers */ "./src/app/controllers/PetsControllers.js");
+/* harmony import */ var _app_controllers_PetsController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/controllers/PetsController */ "./src/app/controllers/PetsController.js");
+/* harmony import */ var _app_controllers_TodosController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app/controllers/TodosController */ "./src/app/controllers/TodosController.js");
+/* harmony import */ var _app_controllers_UsersController__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./app/controllers/UsersController */ "./src/app/controllers/UsersController.js");
+
+
 
 
 
 const routes = new express__WEBPACK_IMPORTED_MODULE_1__["Router"]();
-routes.get('/pets', _app_controllers_PetsControllers__WEBPACK_IMPORTED_MODULE_2__["default"].index);
-routes.post('/pets', _app_controllers_PetsControllers__WEBPACK_IMPORTED_MODULE_2__["default"].store);
+routes.get('/pets', _app_controllers_PetsController__WEBPACK_IMPORTED_MODULE_2__["default"].index);
+routes.post('/pets', _app_controllers_PetsController__WEBPACK_IMPORTED_MODULE_2__["default"].store);
+routes.post('/todo', _app_controllers_TodosController__WEBPACK_IMPORTED_MODULE_3__["default"].store);
+routes.post('/user', _app_controllers_UsersController__WEBPACK_IMPORTED_MODULE_4__["default"].store);
+routes.put('/user/:id', _app_controllers_UsersController__WEBPACK_IMPORTED_MODULE_4__["default"].update);
+routes.delete('/user/:id', _app_controllers_UsersController__WEBPACK_IMPORTED_MODULE_4__["default"].delete);
+routes.get('/user', _app_controllers_UsersController__WEBPACK_IMPORTED_MODULE_4__["default"].index);
 /* harmony default export */ __webpack_exports__["default"] = (routes);
 
 /***/ }),
@@ -200,6 +361,17 @@ routes.post('/pets', _app_controllers_PetsControllers__WEBPACK_IMPORTED_MODULE_2
 /***/ (function(module, exports) {
 
 module.exports = require("cors");
+
+/***/ }),
+
+/***/ "dynamoose":
+/*!****************************!*\
+  !*** external "dynamoose" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("dynamoose");
 
 /***/ }),
 
@@ -233,6 +405,17 @@ module.exports = require("serverless-http");
 /***/ (function(module, exports) {
 
 module.exports = require("source-map-support/register");
+
+/***/ }),
+
+/***/ "uuid":
+/*!***********************!*\
+  !*** external "uuid" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("uuid");
 
 /***/ })
 

@@ -184,3 +184,181 @@ functions:
           cors: true
 ```
 
+---
+
+## Utilizar o dynamoDB
+
+- Baseado nos tutoriais: 
+  - [AWS Lambda Functions and DynamoDB + Serverless Framework](https://medium.com/@iamNoah_/aws-lambda-functions-and-dynamodb-28ab1089061c)
+  - [Serverless CRUD](https://github.com/pmuens/serverless-crud/blob/master/serverless.yml)
+  - [Criando uma API RESTful em NodeJS com DynamoDB](https://medium.com/@lucassoarestech/criando-uma-api-restful-em-nodejs-com-dynamodb-6801c8f2a936)
+
+**Para utilizar o DynamoDB "localmente" é necessário ter instalado o Java Runtime**
+
+- Inicialmente instale a dependencia: 
+
+```bash
+yarn add serverless-dynamodb-local -D
+```
+
+- Adicione nos plugins do `serverless.yml`:
+
+```yml
+plugins:
+  - serverless-webpack
+  - serverless-offline 
+  - serverless-dynamodb-local
+```
+
+- Instale a dependencia do `uuid`:
+
+```bash
+yarn add uuid
+```
+
+- Instale o `dynamoose` para utilizar funções como dynamodb:
+
+```bash
+yarn add dynamoose 
+```
+
+- No arquivo serverless.yml vamos adicionar em `provider`:
+
+```yml
+# DynamoDB
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:CreateTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-east-1:*:table/*"
+    # - Effect: Allow
+    #   Action:
+    #     - dynamodb:DescribeTable
+    #     - dynamodb:CreateTable
+    #     - dynamodb:Query
+    #     - dynamodb:Scan
+    #     - dynamodb:GetItem
+    #     - dynamodb:PutItem
+    #     - dynamodb:UpdateItem
+    #     - dynamodb:DeleteItem
+    #   Resource: "arn:aws:dynamodb:us-east-1:*:table/Users"
+  # /DynamoDB
+```
+
+- Por fim criamos o `src/app/models/` e adicionamos a estrutura da tabela
+
+```js
+import dynamoose from 'dynamoose';
+import { v4 } from 'uuid';
+
+const Userschema = new dynamoose.Schema(
+  {
+    id: {
+      type: String,
+      hashKey: true,
+      default: v4(),
+    },
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+    }
+  },
+  {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+  }
+);
+
+// -> Users será o nome da tabela
+export default dynamoose.model('Users', Userschema);
+
+```
+
+- Para realizar operações na tabela utilizamos o controller em `src/app/controllers/`:
+
+```js
+import User from '../models/User';
+
+class UsersController {
+  async index(req, res) {
+    const user = await User.scan().exec();
+    return res.json(user);
+  }
+
+  async store(req, res) {
+    const user = await User.create(req.body);
+    return res.json(user);
+  }
+
+  async update(req, res) {
+    
+    const user = await User.update({id: req.params.id}, req.body);
+    return res.json(user);
+    
+  }
+
+  async delete(req, res) {
+    await User.delete({id: req.params.id});
+    return res.json({msg: 'Deleted'});
+  }
+}
+
+export default new UsersController();
+```
+
+- Também adicionamos as chamadas na rota em `src/routes.js`:
+
+```js
+routes.post('/user', UsersController.store);
+routes.put('/user/:id', UsersController.update);
+routes.delete('/user/:id', UsersController.delete);
+routes.get('/user', UsersController.index);
+```
+
+- Opcionalmente podemos ajustar as rotas do serverless.yml:
+
+```yml
+functions:
+  run:
+    handler: handler.run
+    events:
+      - http:
+        path: /user
+        method: POST
+        cors: true
+        private: true
+      - http:
+        path: /user
+        method: GET
+        cors: true
+        private: true
+      - http:
+        path: /user/{id}
+        method: PUT
+        cors: true
+        private: true
+      - http:
+        path: /user/{id}
+        method: DELETE
+        cors: true
+        private: true
+```
+
+- Dessa forma concluímos um CRUD utilizando serverless e dynamoDB
+
+---
+
+## Dominio
+
+- https://seed.run/blog/how-to-set-up-a-custom-domain-name-for-api-gateway-in-your-serverless-app.html

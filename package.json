@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "local": "serverless offline start --skipCacheInvalidation"
+    "local": "serverless offline start --skipCacheInvalidation",
+    "deploy:rodolfo": "serverless deploy --stage rodolfo --aws-profile rodolfo"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dynamoose": "^2.3.0",
     "express": "^4.17.1",
     "serverless-http": "^2.5.0",
     "source-map-support": "^0.5.19",

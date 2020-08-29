@@ -16,7 +16,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: local
+  stage: dev
   region: us-east-1
   timeout: 30
   memorySize: 512
@@ -25,16 +25,106 @@ provider:
     exclude:
       - .git/**
       - .vscode/**
+  apiKeys:
+    - name: securityapi
+      value: a123456789ba123456789
+      description: Obrigatorio informar
+  # DynamoDB
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:CreateTable
+        - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-east-1:*:table/*"
+    # - Effect: Allow
+    #   Action:
+    #     - dynamodb:DescribeTable
+    #     - dynamodb:CreateTable
+    #     - dynamodb:Query
+    #     - dynamodb:Scan
+    #     - dynamodb:GetItem
+    #     - dynamodb:PutItem
+    #     - dynamodb:UpdateItem
+    #     - dynamodb:DeleteItem
+    #   Resource: "arn:aws:dynamodb:us-east-1:*:table/Users"
+  # /DynamoDB
 
 functions:
-  hello:
+  run:
     handler: handler.run
     events:
-      - http:
-          path: /
-          method: ANY
-          cors: true
-      - http:
-          path: /{proxy+}
-          method: ANY
-          cors: true
+      #  - http:
+      #      path: /
+      #      method: ANY
+      #      cors: true
+      #      private: true
+      #  - http:
+      #      path: /{proxy+}
+      #      method: ANY
+      #      cors: true
+      #      private: true
+       - http:
+           path: /user
+           method: POST
+           cors: true
+           private: true
+       - http:
+           path: /user
+           method: GET
+           cors: true
+           private: true
+       - http:
+           path: /user/{id}
+           method: PUT
+           cors: true
+           private: true
+       - http:
+           path: /user/{id}
+           method: DELETE
+           cors: true
+           private: true
+       - http:
+           path: /pets
+           method: GET
+           cors: true
+           private: true
+      
+# DynamoDB
+# resources:
+#   Resources:
+#     ## Utilizar um nome sugestivo para referir a tabela
+#     TodosDynamoDbTable:
+#       Type: 'AWS::DynamoDB::Table'
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           -
+#             AttributeName: id
+#             AttributeType: S
+#         KeySchema:
+#           -
+#             AttributeName: id
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         TableName: 'todos'
+#     usersTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: usersTable
+#         AttributeDefinitions:
+#           - AttributeName: email
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: email
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+# /DynamoDB
