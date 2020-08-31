@@ -5,6 +5,10 @@ plugins:
   - serverless-webpack
   - serverless-offline 
   - serverless-dynamodb-local
+  # dotenv
+  - serverless-dotenv-plugin
+  # upload
+  - serverless-apigw-binary
 
 # Configuração do serverless-webpack
 # Habilitar o auto-packing de módulos externos
@@ -12,6 +16,10 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  apigwBinary:
+    types:           #list of mime-types
+      - 'image/png'
+      - 'text/html'
 
 provider:
   name: aws
@@ -29,6 +37,10 @@ provider:
     - name: securityapi
       value: a123456789ba123456789
       description: Obrigatorio informar
+  # upload - ok?
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
   # DynamoDB
   iamRoleStatements:
     - Effect: Allow
@@ -93,6 +105,31 @@ functions:
            method: GET
            cors: true
            private: true
+       - http:
+           path: /upload
+           method: POST
+           cors: true
+           private: true
+           contentHandling: CONVERT_TO_BINARY
+
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: rodoserverlessjs1
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
       
 # DynamoDB
 # resources:

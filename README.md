@@ -359,6 +359,121 @@ functions:
 
 ---
 
+## Upload arquivo para S3
+
+- Referências:
+  - [NodeJS: Uploading file to S3](https://medium.com/@masnun/nodejs-uploading-file-to-s3-cbf74c2ec984)
+
+- Inicialmente instale o `AWS-SDK`:
+
+```bash
+yarn add aws-sdk
+```
+
+- Adicionar a lib do multer:
+
+```bash
+yarn add multer
+```
+
+- Adicionar a lib do multer-s3:
+
+```bash
+yarn add multer-s3
+```
+
+- Adicionar o plugin do serverless:
+
+```bash
+yarn add serverless-apigw-binary
+```
+
+```bash
+yarn add serverless-plugin-custom-binary
+```
+
+- Nas configurações do serverless adicionar:
+
+**Ajustar `NOME_DO_BUCKET_AQUI` conforme necessidade**
+
+```yml
+plugins:
+  # upload
+  - serverless-apigw-binary
+
+custom:
+  apigwBinary:
+    types:           #list of mime-types
+      - 'image/png'
+      - 'text/html'
+
+provider:
+  # upload - ok?
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
+
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: NOME_DO_BUCKET_AQUI
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
+```
+
+- No arquivo `src/routes.js` adicionamos:
+
+```js
+// ...
+import AWS from 'aws-sdk';
+import multer from 'multer';
+import multerS3 from 'multer-s3';
+
+// ...
+
+// ===AJUSTAR CONFORME SEUS DADOS===
+AWS.config.update({
+  accessKeyId: ACCESS_KEY_ID, // ===AJUSTAR CONFORME SEUS DADOS===
+  secretAccessKey: SECRET_ACCESS_KEY, // ===AJUSTAR CONFORME SEUS DADOS===
+  region: REGION, // ===AJUSTAR CONFORME SEUS DADOS===
+});
+// /===AJUSTAR CONFORME SEUS DADOS===
+
+
+const s3 = new AWS.S3();
+
+const upload = multer({
+  storage: multerS3({
+      s3: s3,
+      bucket: 'NOME_DO_BUCKET_AQUI',
+      acl: 'public-read',
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      key: function (req, file, cb) {
+          console.log(file);
+          cb(null, file.originalname); //use Date.now() for unique file keys
+      }
+  })
+});
+
+routes.post('/upload', upload.single('file'), function (req, res, next) {
+  res.send("Uploaded!");
+});
+```
+
 ## Dominio
+
+- Para criar uma url personalizada para acessar o lambda pode encontrar mais informações em:
 
 - https://seed.run/blog/how-to-set-up-a-custom-domain-name-for-api-gateway-in-your-serverless-app.html
