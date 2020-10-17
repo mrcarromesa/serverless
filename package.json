@@ -1,7 +1,8 @@
 {
   "scripts": {
     "local": "serverless offline start --skipCacheInvalidation",
-    "deploy:rodolfo": "serverless deploy --stage rodolfo --aws-profile rodolfo"
+    "deploy:rodolfo": "serverless deploy --stage rodolfo --aws-profile rodolfo",
+    "serverless_remove": "serverless remove --stage rodolfo --aws-profile rodolfo"
   },
   "dependencies": {
     "aws-sdk": "^2.742.0",

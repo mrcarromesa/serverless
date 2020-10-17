@@ -433,6 +433,8 @@ resources:
             - "*"
 ```
 
+- [AccessControl](https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html)
+
 - No arquivo `src/routes.js` adicionamos:
 
 ```js
@@ -472,8 +474,17 @@ routes.post('/upload', upload.single('file'), function (req, res, next) {
 });
 ```
 
+- Caso apague algum recurso manualmente que foi gerado via serverless, pode dá algum problema
+para resolver esse problema uma solução é remover tudo e criar novamente:
+
+```bash
+serverless remove --stage STAGE_NAME
+```
+
 ## Dominio
 
 - Para criar uma url personalizada para acessar o lambda pode encontrar mais informações em:
 
 - https://seed.run/blog/how-to-set-up-a-custom-domain-name-for-api-gateway-in-your-serverless-app.html
+
+

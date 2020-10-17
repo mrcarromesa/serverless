@@ -118,7 +118,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: rodoserverlessjs1
-        AccessControl: PublicRead
+        AccessControl: Private
         CorsConfiguration:
           CorsRules:
           - AllowedMethods:
